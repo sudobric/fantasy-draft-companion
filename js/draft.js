@@ -3,6 +3,7 @@
  */
 
 const STORAGE_KEY = "fantasy-draft-companion-league-settings";
+const DRAFTED_TEAM_STORAGE_KEY = "fantasy-draft-companion-drafted-team";
 const CSV_URL = "data/nba_fantasy_2025_26.csv";
 const PLAYERS_PER_TEAM = 12;
 /** Base URL for the explain-recommendation API. Uses current origin when served over http(s). Empty = feature off. */
@@ -217,10 +218,16 @@ function buildFacts(p) {
 
 /** Fetch one plain-English explanation for all top 3 recommendations and show it in the section below the cards. */
 function fetchAndShowPlainEnglishForTop3(top3) {
-  if (!EXPLAIN_API_URL || !top3.length || !recommendationsExplanationWrap || !recommendationsExplanationText) return;
+  if (!EXPLAIN_API_URL || !top3.length || !recommendationsExplanationWrap || !recommendationsExplanationText) {
+    recommendationsExplanationText.textContent = "Explanation feature is disabled for the live demo. Please check the README for instructions on how to enable it.";
+    recommendationsExplanationWrap.classList.add("recommendations-explanation-wrap--disabled");
+    recommendationsExplanationWrap.hidden = false;
+    return;
+  }
   const factsList = top3.map((p) => buildFacts(p)).filter(Boolean);
   if (factsList.length === 0) return;
 
+  recommendationsExplanationWrap.classList.remove("recommendations-explanation-wrap--disabled");
   recommendationsExplanationWrap.hidden = false;
   recommendationsExplanationText.textContent = "...";
 
@@ -355,6 +362,11 @@ function renderPick() {
     draftCompleteCard.hidden = false;
     renderYourRoster();
     renderDraftHistory();
+    try {
+      localStorage.setItem(DRAFTED_TEAM_STORAGE_KEY, JSON.stringify(userRoster));
+    } catch (e) {
+      console.error("Failed to save drafted team:", e);
+    }
     return;
   }
 

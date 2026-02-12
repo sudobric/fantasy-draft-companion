@@ -19,6 +19,7 @@
     <nav class="tabs" role="tablist" aria-label="Main sections">
       <button type="button" class="tab active" role="tab" id="tab-settings" aria-selected="true" aria-controls="panel-settings">League Settings</button>
       <button type="button" class="tab" role="tab" id="tab-players" aria-selected="false" aria-controls="panel-players">Player Rankings</button>
+      <button type="button" class="tab" role="tab" id="tab-myteam" aria-selected="false" aria-controls="panel-myteam">My Team</button>
     </nav>
 
     <main class="main">
@@ -150,6 +151,14 @@
           </table>
         </div>
         <p class="players-count" id="players-count"></p>
+      </section>
+
+      <section class="tab-panel card" id="panel-myteam" role="tabpanel" aria-labelledby="tab-myteam" hidden>
+        <h2>My Team</h2>
+        <p class="card-desc">Your last completed draft roster.</p>
+        <div id="myteam-content">
+          <!-- Filled by JS: either roster list or empty-state message -->
+        </div>
       </section>
     </main>
 

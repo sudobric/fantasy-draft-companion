@@ -1,13 +1,18 @@
 /**
  * Player Rankings tab: load CSV, sort by fantasy columns, filter by team/position.
+ * My Team tab: show drafted roster from localStorage.
  */
 
 const CSV_URL = "data/nba_fantasy_2025_26.csv";
+const DRAFTED_TEAM_STORAGE_KEY = "fantasy-draft-companion-drafted-team";
 
 const tabSettings = document.getElementById("tab-settings");
 const tabPlayers = document.getElementById("tab-players");
+const tabMyTeam = document.getElementById("tab-myteam");
 const panelSettings = document.getElementById("panel-settings");
 const panelPlayers = document.getElementById("panel-players");
+const panelMyTeam = document.getElementById("panel-myteam");
+const myteamContent = document.getElementById("myteam-content");
 const filterTeam = document.getElementById("filter-team");
 const filterPosition = document.getElementById("filter-position");
 const tableBody = document.getElementById("players-tbody");
@@ -132,29 +137,70 @@ function setSort(key) {
   applySortAndFilter();
 }
 
-function switchTab(toPlayers) {
-  const isPlayers = toPlayers === true;
+function getPlayerFromEntry(entry) {
+  return entry && (entry.player ?? entry);
+}
+
+function renderMyTeamPanel() {
+  if (!myteamContent) return;
+  try {
+    const raw = localStorage.getItem(DRAFTED_TEAM_STORAGE_KEY);
+    const roster = raw ? JSON.parse(raw) : null;
+    if (!roster || !Array.isArray(roster) || roster.length === 0) {
+      myteamContent.innerHTML = "<p class=\"myteam-empty\">No team drafted yet. Complete a draft to see your roster here.</p>";
+      return;
+    }
+    const listHtml = roster
+      .map((entry, i) => {
+        const p = getPlayerFromEntry(entry);
+        const slot = entry.slot || "—";
+        return `<li><span class="roster-pick-num">${i + 1}</span> ${escapeHtml(p?.player_name ?? "—")} <span class="roster-meta">${escapeHtml(p?.team ?? "")} ${escapeHtml(p?.position ?? "")}</span> <span class="roster-slot-tag">${escapeHtml(slot)}</span></li>`;
+      })
+      .join("");
+    myteamContent.innerHTML = `<ul class="roster-list">${listHtml}</ul>`;
+  } catch (e) {
+    myteamContent.innerHTML = "<p class=\"myteam-empty\">Could not load your drafted team.</p>";
+  }
+}
+
+function switchTab(activeTab) {
+  const isSettings = activeTab === "settings";
+  const isPlayers = activeTab === "players";
+  const isMyTeam = activeTab === "myteam";
+
   if (tabSettings) {
-    tabSettings.classList.toggle("active", !isPlayers);
-    tabSettings.setAttribute("aria-selected", !isPlayers ? "true" : "false");
+    tabSettings.classList.toggle("active", isSettings);
+    tabSettings.setAttribute("aria-selected", isSettings ? "true" : "false");
   }
   if (tabPlayers) {
     tabPlayers.classList.toggle("active", isPlayers);
     tabPlayers.setAttribute("aria-selected", isPlayers ? "true" : "false");
   }
+  if (tabMyTeam) {
+    tabMyTeam.classList.toggle("active", isMyTeam);
+    tabMyTeam.setAttribute("aria-selected", isMyTeam ? "true" : "false");
+  }
+
   if (panelSettings) {
-    panelSettings.classList.toggle("active", !isPlayers);
-    panelSettings.hidden = isPlayers;
+    panelSettings.classList.toggle("active", isSettings);
+    panelSettings.hidden = !isSettings;
   }
   if (panelPlayers) {
     panelPlayers.classList.toggle("active", isPlayers);
     panelPlayers.hidden = !isPlayers;
   }
+  if (panelMyTeam) {
+    panelMyTeam.classList.toggle("active", isMyTeam);
+    panelMyTeam.hidden = !isMyTeam;
+  }
+
+  if (isMyTeam) renderMyTeamPanel();
 }
 
 // Tab clicks
-if (tabSettings) tabSettings.addEventListener("click", () => switchTab(false));
-if (tabPlayers) tabPlayers.addEventListener("click", () => switchTab(true));
+if (tabSettings) tabSettings.addEventListener("click", () => switchTab("settings"));
+if (tabPlayers) tabPlayers.addEventListener("click", () => switchTab("players"));
+if (tabMyTeam) tabMyTeam.addEventListener("click", () => switchTab("myteam"));
 
 // Sort: click on sortable headers
 document.querySelectorAll(".players-table th.sortable").forEach((th) => {
@@ -168,3 +214,4 @@ if (filterPosition) filterPosition.addEventListener("change", applySortAndFilter
 // Initial load and panel visibility
 loadPlayers();
 if (panelPlayers) panelPlayers.hidden = true;
+if (panelMyTeam) panelMyTeam.hidden = true;
