@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Draft Companion — Fantasy Basketball</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div class="app app-draft">
+    <header class="header header-draft">
+      <a href="index.html" class="back-link">← League settings</a>
+      <h1>Draft Companion</h1>
+      <p class="tagline">Snake draft · Enter picks, get recommendations on your turn</p>
+    </header>
+
+    <main class="main main-draft">
+      <section class="card draft-info-card" id="draft-info-card">
+        <h2>Draft setup</h2>
+        <p id="draft-setup-msg" class="card-desc">Loading…</p>
+        <div id="draft-setup-actions" class="draft-setup-actions" hidden>
+          <label class="simulate-toggle">
+            <input type="checkbox" id="simulate-draft-checkbox" />
+            <span>Simulate other teams (auto-pick by top recommendation)</span>
+          </label>
+          <button type="button" id="btn-start-draft" class="btn btn-primary">Start draft</button>
+        </div>
+      </section>
+
+      <section class="card draft-flow-card" id="draft-flow-card" hidden>
+        <div class="draft-flow-header">
+          <div class="draft-progress">
+          <span class="draft-pick-label">Pick <strong id="current-pick-num">1</strong> of <strong id="total-picks">144</strong></span>
+          <span class="draft-round-label">Round <strong id="current-round">1</strong></span>
+          <span class="draft-turn-label" id="draft-turn-label">Team 1’s turn</span>
+        </div>
+          <label class="simulate-toggle simulate-toggle-inline" title="Auto-pick best available for other teams">
+            <input type="checkbox" id="simulate-draft-checkbox-flow" />
+            <span>Simulate draft</span>
+          </label>
+        </div>
+
+        <div class="draft-turn-section" id="section-other-pick" hidden>
+          <p class="card-desc">Enter the player that was just drafted by this team.</p>
+          <div class="other-pick-row">
+            <div class="form-group autocomplete-wrap">
+              <label for="other-pick-input">Drafted player</label>
+              <input type="text" id="other-pick-input" placeholder="Type player name…" autocomplete="off" />
+              <ul class="autocomplete-list" id="autocomplete-list" role="listbox" hidden></ul>
+            </div>
+            <button type="button" id="btn-confirm-other" class="btn btn-primary" disabled>Confirm pick</button>
+          </div>
+        </div>
+
+        <div class="draft-turn-section" id="section-your-pick" hidden>
+          <p class="card-desc">Your turn. Choose one of the top recommendations or any available player.</p>
+          <div class="recommendations" id="recommendations">
+            <!-- Top 3 filled by JS -->
+          </div>
+          <div class="recommendations-explanation-wrap" id="recommendations-explanation-wrap" hidden>
+            <h3 class="recommendations-explanation-title">Why these picks?</h3>
+            <p class="recommendations-explanation-text" id="recommendations-explanation-text"></p>
+          </div>
+          <div class="form-group autocomplete-wrap your-pick-custom">
+            <label for="your-pick-input">Or search and pick any available player</label>
+            <input type="text" id="your-pick-input" placeholder="Search player…" autocomplete="off" />
+            <ul class="autocomplete-list" id="your-autocomplete-list" role="listbox" hidden></ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="card draft-complete-card" id="draft-complete-card" hidden>
+        <h2>Draft complete</h2>
+        <p class="card-desc">Every team has 12 players. Your final roster is below.</p>
+        <a href="draft.html" class="btn btn-secondary">Start a new draft</a>
+      </section>
+    </main>
+
+      <section class="card your-roster-card" id="your-roster-card" hidden>
+        <h2>Your team</h2>
+        <p class="card-desc">Your picks so far (<span id="your-pick-count">0</span>/12)</p>
+        <div class="slot-indicators" id="slot-indicators" aria-label="Position slots filled"></div>
+        <ul class="roster-list" id="your-roster-list"></ul>
+      </section>
+
+      <section class="card draft-history-card" id="draft-history-card" hidden aria-live="polite">
+        <h2>Draft history</h2>
+        <p class="card-desc">Players drafted by pick position.</p>
+        <div class="draft-history-wrap">
+          <ul class="draft-history-list" id="draft-history-list"></ul>
+        </div>
+      </section>
+
+    <footer class="footer">
+      <p><a href="index.html">Back to League Settings</a></p>
+    </footer>
+  </div>
+
+  <script src="js/draft.js"></script>
+</body>
+</html>

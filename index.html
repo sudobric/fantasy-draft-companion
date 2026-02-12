@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fantasy Basketball Draft Companion</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <h1>Fantasy Basketball Draft Companion</h1>
+      <p class="tagline">Set your league, then dominate the draft.</p>
+    </header>
+
+    <nav class="tabs" role="tablist" aria-label="Main sections">
+      <button type="button" class="tab active" role="tab" id="tab-settings" aria-selected="true" aria-controls="panel-settings">League Settings</button>
+      <button type="button" class="tab" role="tab" id="tab-players" aria-selected="false" aria-controls="panel-players">Player Rankings</button>
+    </nav>
+
+    <main class="main">
+      <div class="tab-panel active" id="panel-settings" role="tabpanel" aria-labelledby="tab-settings">
+      <section class="card settings-card">
+        <h2>League Settings</h2>
+        <p class="card-desc">Configure your league once; we’ll use this during the draft.</p>
+
+        <form id="league-settings-form" class="settings-form">
+          <div class="form-group">
+            <label for="league-name">League name <span class="optional">(optional)</span></label>
+            <input type="text" id="league-name" name="leagueName" placeholder="e.g. Office League 2025" autocomplete="off" />
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="num-teams">Number of teams</label>
+              <input type="number" id="num-teams" name="numTeams" min="4" max="30" value="12" required />
+            </div>
+            <div class="form-group">
+              <label for="draft-position">Your draft position</label>
+              <input type="number" id="draft-position" name="draftPosition" min="1" max="30" value="1" required />
+              <span class="hint" id="draft-position-hint"></span>
+            </div>
+          </div>
+
+          <fieldset class="roster-section">
+            <legend>Roster slots</legend>
+            <p class="fieldset-desc">How many of each position can you start?</p>
+            <div class="roster-grid">
+              <div class="form-group">
+                <label for="slot-pg">PG</label>
+                <input type="number" id="slot-pg" name="slotPG" min="0" max="5" value="1" />
+              </div>
+              <div class="form-group">
+                <label for="slot-sg">SG</label>
+                <input type="number" id="slot-sg" name="slotSG" min="0" max="5" value="1" />
+              </div>
+              <div class="form-group">
+                <label for="slot-sf">SF</label>
+                <input type="number" id="slot-sf" name="slotSF" min="0" max="5" value="1" />
+              </div>
+              <div class="form-group">
+                <label for="slot-pf">PF</label>
+                <input type="number" id="slot-pf" name="slotPF" min="0" max="5" value="1" />
+              </div>
+              <div class="form-group">
+                <label for="slot-c">C</label>
+                <input type="number" id="slot-c" name="slotC" min="0" max="5" value="1" />
+              </div>
+              <div class="form-group">
+                <label for="slot-g">G <span class="optional">(PG or SG)</span></label>
+                <input type="number" id="slot-g" name="slotG" min="0" max="5" value="1" />
+              </div>
+              <div class="form-group">
+                <label for="slot-f">F <span class="optional">(SF or PF)</span></label>
+                <input type="number" id="slot-f" name="slotF" min="0" max="5" value="1" />
+              </div>
+              <div class="form-group">
+                <label for="slot-util">UTIL</label>
+                <input type="number" id="slot-util" name="slotUTIL" min="0" max="5" value="2" />
+              </div>
+            </div>
+            <p class="roster-total">Total starter slots: <strong id="total-starter-slots">10</strong></p>
+          </fieldset>
+
+          <div class="form-group">
+            <label for="bench-slots">Bench slots</label>
+            <input type="number" id="bench-slots" name="benchSlots" min="0" max="10" value="3" />
+            <span class="hint">Total roster = starters + bench</span>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Save league settings</button>
+            <button type="button" id="btn-reset" class="btn btn-secondary">Reset to defaults</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="card status-card" id="status-card">
+        <h2>Saved settings</h2>
+        <p id="status-message">No league settings saved yet. Fill the form and click “Save league settings”.</p>
+        <p class="status-detail" id="status-detail"></p>
+      </section>
+
+      <section class="card draft-cta-card">
+        <h2>Draft Companion</h2>
+        <p class="card-desc">Run a live snake draft. Enter other teams' picks, then get top-3 recommendations when it's your turn.</p>
+        <a href="draft.html" class="btn btn-primary btn-draft-cta">Start draft</a>
+      </section>
+      </div>
+
+      <section class="tab-panel card players-panel" id="panel-players" role="tabpanel" aria-labelledby="tab-players" hidden>
+        <h2>Player Rankings</h2>
+        <p class="card-desc">2024-25 fantasy points and 2025-26 projections. Sort by column; filter by team or position.</p>
+        <div class="players-filters">
+          <div class="form-group">
+            <label for="filter-team">Team</label>
+            <select id="filter-team" aria-label="Filter by team">
+              <option value="">All teams</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="filter-position">Position</label>
+            <select id="filter-position" aria-label="Filter by position">
+              <option value="">All positions</option>
+              <option value="PG">PG</option>
+              <option value="SG">SG</option>
+              <option value="SF">SF</option>
+              <option value="PF">PF</option>
+              <option value="C">C</option>
+            </select>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table class="players-table" id="players-table">
+            <thead>
+              <tr>
+                <th>Player</th>
+                <th>Team</th>
+                <th>Pos</th>
+                <th class="sortable sort-desc" data-sort="fantasy_pts_2024_25" id="th-2025">2024-25 FP</th>
+                <th class="sortable" data-sort="projected_fantasy_pts_2025_26" id="th-2026">2025-26 Proj</th>
+              </tr>
+            </thead>
+            <tbody id="players-tbody">
+              <tr><td colspan="5" class="loading">Loading…</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="players-count" id="players-count"></p>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <p>Settings are stored in your browser only. Clear site data to remove them.</p>
+    </footer>
+  </div>
+
+  <script src="js/app.js"></script>
+  <script src="js/players.js"></script>
+</body>
+</html>
