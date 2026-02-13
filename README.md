@@ -25,6 +25,10 @@ A web app to configure your fantasy basketball league and run a live snake draft
 - **Your roster**: Live view of your picks with slot indicators (e.g. PG 1/1, UTIL 0/2)
 - **Draft history**: Full list of all picks as they’re made
 
+- **LLM-based Explanation Engine*** an LLM-powered module that converts structured fantasy basketball rankings into plain-English explanations.
+
+**For the live demo, this feature is disabled to avoid ongoing inference costs and infra maintenance. The full implementation, prompts, and integration logic are available in the repository. To enable, please uncomment the EXPLAIN_URL code in draft.js file*
+
 ## How to run
 
 You need a local server to load player data (the CSV is fetched via `fetch`; opening files directly with `file://` will fail).
